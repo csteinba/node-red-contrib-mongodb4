@@ -8,7 +8,7 @@ jobs:
     env:
       MONGODB_PROTOCOL: mongodb+srv
       MONGODB_HOSTNAME: ${{ secrets.MONGODB_HOSTNAME }}
-      MONGODB_DBNAME: ${{ secrets.MONGODB_DBNAME }}
+      MONGODB_DATABASE: ${{ secrets.MONGODB_DATABASE }}
       MONGODB_AUTHMECH: ${{ secrets.MONGODB_AUTHMECH }}
       MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
       MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}

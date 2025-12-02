@@ -5,6 +5,8 @@ const mongodbNode = require("../src/mongodb4.js");
 
 helper.init(require.resolve("node-red"));
 
+console.log("TLS is", Boolean(process.env.MONGODB_TLS) ? "enabled" : "disabled");
+
 describe("testing mongodb4 nodes", function () {
     const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION || "";
     const MONGODB_CREDENTIALS = {
@@ -18,9 +20,9 @@ describe("testing mongodb4 nodes", function () {
             protocol: process.env.MONGODB_PROTOCOL || "mongodb",
             hostname: process.env.MONGODB_HOSTNAME || "",
             port: process.env.MONGODB_PORT || "",
-            dbName: process.env.MONGODB_DBNAME || "",
+            dbName: process.env.MONGODB_DATABASE || "",
             authSource: process.env.MONGODB_AUTHSRC || "",
-            authMechanism: process.env.MONGODB_AUTHMECH || "SCRAM-SHA-1",
+            authMechanism: process.env.MONGODB_AUTHMECH || "SCRAM-SHA-256",
             tls: Boolean(process.env.MONGODB_TLS),
             uriTabActive: "tab-uri-simple"
         },
@@ -335,7 +337,7 @@ describe("testing mongodb4 nodes", function () {
 
                 helperNode.on("input", function (msg) {
                     try {
-                        msg.should.have.property("payload").with.property("db", process.env.MONGODB_DBNAME);
+                        msg.should.have.property("payload").with.property("db", process.env.MONGODB_DATABASE);
                         done();
                     } catch (err) {
                         done(err);
