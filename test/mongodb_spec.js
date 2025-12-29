@@ -308,7 +308,7 @@ describe("testing mongodb4 nodes", function () {
                     try {
                         should(call.firstArg).have.property(
                             "message",
-                            "unknown operation: 'willFail'"
+                            "Target collection has no function 'willFail'"
                         );
                         done();
                     } catch (err) {

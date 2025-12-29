@@ -195,28 +195,48 @@ module.exports = function (RED) {
 
                 // get mongodb database
                 if (!node.mongoClient || !node.mongoClient.db) {
-                    throw Error("MongoDB config error.");
+                    throw Error("MongoDB config error");
                 }
                 const database = await node.mongoClient.db();
 
-                let operTarget;
-                if (node.config.mode === "db") {
-                    // database operation mode
-                    operTarget = database;
+                // determine operation mode
+                let operMode;
+                if(node.config.mode === "dynamic") {
+                    // dynamic operation mode
+                    operMode = msg.mode;
+                    if (!operMode) throw Error("Operation mode undefined");
+                    delete msg.mode;
                 } else {
-                    // default mode is collection operation mode
-                    const cn = node.config.collection || msg.collection;
-                    if (!cn) throw Error("collection name undefined");
-                    operTarget = database.collection(cn);
+                    // static operation mode
+                    operMode = node.config.mode;
+                }
+                
+                // determine operation target
+                let operTarget;
+                switch(operMode) {
+                    case "db":
+                        // database operation mode
+                        operTarget = database;
+                        break;
+                    case "collection":
+                        // collection operation mode
+                        const cn = node.config.collection || msg.collection;
+                        if (!cn) throw Error("Collection name undefined");
+                        delete msg.collection;
+                        operTarget = database.collection(cn);
+                        break;
+                    default:
+                        throw Error(`Unknown operation mode: '${operMode}'. Expected 'db' or 'collection'.`);
                 }
 
-                // get mongodb operation
+                // determine operation
                 const operation = node.config.operation || msg.operation;
-                if (!operation) throw Error("operation undefined");
+                if (!operation) throw Error("Operation undefined");
+                delete msg.operation;
 
                 // check if mongodb collection has operation
                 if (typeof operTarget[operation] !== "function") {
-                    throw Error(`unknown operation: '${operation}'`);
+                    throw Error(`Target ${operMode} has no function '${operation}'`);
                 }
 
                 // prepare operation arguments
@@ -243,7 +263,7 @@ module.exports = function (RED) {
                     } catch (err) {
                         // on error set warning and continue
                         throw Error(
-                            `document _id handling failed ${err.message}`
+                            `Document _id handling failed ${err.message}`
                         );
                     }
                 }

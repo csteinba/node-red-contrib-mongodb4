@@ -420,6 +420,7 @@ If you set the value of ConnectTimeoutMS or SocketTimeoutMS to 0, your applicati
         <select id="node-input-mode" style="width: calc(100% - 140px);">
             <option value="collection">collection operation</option>
             <option value="db">database operation</option>
+            <option value="dynamic">dynamic / msg.mode</option>
         </select>
     </div>
     <div class="form-row">
@@ -486,7 +487,7 @@ Execute MongoDB collection operations with this node.
 
 -   **Connection (mongodb-client)** - Select a MongoDB database server connection.
 
--   **Mode | msg.mode (string)** - Decide if you want to run a collection or db operation {'collection', 'db'}
+-   **Operation Mode (string)** - Decide if you want to run a collection or db operation. Choose 'dynamic' to set the mode with `msg.mode`. Accepted values are `collection` or `db`.
 
 -   **Collection | msg.collection (string)** - MongoDB database collection.
 
